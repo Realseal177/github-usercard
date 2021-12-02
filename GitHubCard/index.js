@@ -3,7 +3,18 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+import axios from 'axios';
 
+function getData(user) {
+axios.get(`https://api.github.com/users/${user}`)
+  .then(resp => {
+    console.log(resp.data);
+    const user = gitCardMaker(resp.data) // user is now "equal to the whole HTML thing" I just built with getCardMaker
+    document.querySelector('.cards').appendChild(user); // now appended 'user' ⬆️ to where .cards is inside the HTML
+  }).catch(error => {
+    console.error(error);
+  }).finally(() => console.log('It works!!'))
+}
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -28,12 +39,61 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell', 'Realseal177'];
+
+for (let i = 0; i < followersArray.length; i++) {
+  getData(followersArray[i])
+}
+// Using the .forEach method ==>> followersArray.forEach(followers => getData(followers))
+
+ // STEP 3: Create a function that accepts a single object as its only argument. 
+ // Using DOM methods and properties, create and return the following markup:
+function gitCardMaker(object) {
+  // instantiating elements
+  const card = document.createElement('div');
+  const image = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const userName = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const address = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+  // hierarchy
+  card.appendChild(image);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(userName);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  profile.appendChild(address);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  // class names
+  card.classList.add('card');
+  image.src = object.avatar_url;
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  name.textContent = `${object.name}`;
+  userName.classList.add('userName');
+  location.textContent = `Location: ${object.location}`;
+  address.href = `${object.url}`
+  address.textContent = `${object.url}`
+  followers.textContent = `Followers: ${object.followers}`
+  following.textContent = `Following: ${object.following}`
+  bio.textContent = `Bio: ${object.bio}`
+
+  return card;
+}  
+
+
+// document.querySelector('.cards').appendChild(user); //
 
 /*
-  STEP 3: Create a function that accepts a single object as its only argument.
-    Using DOM methods and properties, create and return the following markup:
-
     <div class="card">
       <img src={image url of user} />
       <div class="card-info">
